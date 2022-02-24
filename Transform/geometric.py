@@ -1,6 +1,7 @@
 from threading import local
 from .interpolation import interpolation
 import numpy as np
+import math 
 class Geometric:
     def __init__(self):
         pass
@@ -41,8 +42,8 @@ class Geometric:
             if (point[1] > max_y):
                 max_y = point[1]
         
-        rows = int(max_x - min_x)
-        cols = int(max_y - min_y)
+        rows = math.ceil(max_x - min_x)
+        cols = math.ceil(max_y - min_y)
 
         new_image = np.zeros((rows, cols))
 
@@ -124,8 +125,8 @@ class Geometric:
             if (point[1] > max_y):
                 max_y = point[1]
         
-        rows = int(max_x - min_x)
-        cols = int(max_y - min_y)
+        rows = math.ceil(max_x - min_x)
+        cols = math.ceil(max_y - min_y)
 
         origin = np.array((-min_x, -min_y))
         
