@@ -11,11 +11,16 @@ class Geometric:
                 image: input image
                 theta: angle to rotate the image by (in radians)
                 return the rotated image"""
+
+        #Get local copy of the image and theta        
         local_image = image.copy()
         local_theta = theta
+
+        #Rotation matrix
         rotation = np.array(( (np.cos(local_theta), -np.sin(local_theta)), 
                                 (np.sin(local_theta), np.cos(local_theta))))
 
+        #Four corners rotated
         top_left = np.array((0,0)) * rotation
         top_right = np.array((0, local_image.shape[1])) * rotation
         bottom_left = np.array((local_image.shape[0], 0)) * rotation
@@ -26,6 +31,7 @@ class Geometric:
         third_point = bottom_left.sum(axis = 1)
         fourth_point = bottom_right.sum(axis = 1)
 
+        #Get the max, min for x, y
         max_x = 0
         max_y = 0
         min_x = 0
@@ -42,11 +48,13 @@ class Geometric:
             if (point[1] > max_y):
                 max_y = point[1]
         
+        #Creating new image baed on the rows and columns found
         rows = math.ceil(max_x - min_x)
         cols = math.ceil(max_y - min_y)
 
         new_image = np.zeros((rows, cols))
 
+        #Get new image
         for y in range(0, local_image.shape[1]):
             for x in range(0, local_image.shape[0]):
                 point = np.array((x, y)) * rotation
@@ -64,13 +72,18 @@ class Geometric:
                 Original shape: shape of the orginal image
                 return the original image"""
 
+        #Get local copy of the input
         local_image = rotated_image.copy()
         local_theta = theta * -1
+
+        #Rotation matrix with -theta
         rotation = np.array(( (np.cos(local_theta), -np.sin(local_theta)), 
                                 (np.sin(local_theta), np.cos(local_theta))))
 
+        #Create new image with the original shape parameter
         new_image = np.zeros(original_shape)
         
+        #Get new image
         for y in range(0, local_image.shape[1]):
             for x in range (0, local_image.shape[0]):
                 temp = np.array((x, y)) - origin
@@ -89,16 +102,19 @@ class Geometric:
                 interpolation_type: type of interpolation to use (nearest_neighbor, bilinear)
                 return the original image"""
 
+        #Get local copy of the input
         local_image = image.copy()
         local_theta = theta
         reverse_theta = local_theta * -1
 
+        #Rotation Matricies
         rotation = np.array(( (np.cos(local_theta), -np.sin(local_theta)), 
                                 (np.sin(local_theta), np.cos(local_theta))))
         
         reverse_rotation = np.array(( (np.cos(reverse_theta), -np.sin(reverse_theta)), 
                                         (np.sin(reverse_theta), np.cos(reverse_theta))))
 
+        #Four corners rotated
         top_left = np.array((0,0)) * rotation
         top_right = np.array((0, local_image.shape[1])) * rotation
         bottom_left = np.array((local_image.shape[0], 0)) * rotation
@@ -128,6 +144,7 @@ class Geometric:
         rows = math.ceil(max_x - min_x)
         cols = math.ceil(max_y - min_y)
 
+        #Set origin and created new image
         origin = np.array((-min_x, -min_y))
         
         new_image = np.zeros((rows, cols))
@@ -139,6 +156,7 @@ class Geometric:
 
                 new_image[int(coordinate[0] - min_x), int(coordinate[1] - min_y)] = local_image[x, y]
 
+        #Interpolation based on input parameter
         for y in range(0, new_image.shape[1]):
             for x in range(0, new_image.shape[0]):
                 coordinate = np.array((x, y))
@@ -158,6 +176,8 @@ class Geometric:
                         intensity = interpolation.bilinear_interpolation(inverse_coordinate, local_image)
 
                         new_image[x, y] = intensity
+                    else:
+                        new_image[x, y] = 0
                     
         return new_image
 
